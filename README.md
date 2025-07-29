@@ -1,5 +1,19 @@
 # Copilot Agents and MCP Hackathon Workshop Challenges
 
+[![Test Suite](https://github.com/octocaio/sinquia_evertec_workshop/actions/workflows/test.yml/badge.svg)](https://github.com/octocaio/sinquia_evertec_workshop/actions/workflows/test.yml)
+[![Deploy](https://github.com/octocaio/sinquia_evertec_workshop/actions/workflows/deploy.yml/badge.svg)](https://github.com/octocaio/sinquia_evertec_workshop/actions/workflows/deploy.yml)
+[![codecov](https://codecov.io/gh/octocaio/sinquia_evertec_workshop/branch/main/graph/badge.svg)](https://codecov.io/gh/octocaio/sinquia_evertec_workshop)
+
+Welcome to the Copilot Hackathon Workshop repository! Here you'll find four hands-on challenge files, each designed as a self-contained markdown document to help you practice building modern web and backend applications.
+
+## Challenge Overview
+
+**1. [W1 - Air Quality Workshop Prompts](./W1%20-%20air-quality-workshop-prompts.md)** 🌍  
+*Introductory Challenge – Recommended for First-Time Users*  
+This is a simple, step-by-step challenge to build an Air Quality Checker web app. It guides you through scaffolding a frontend, connecting to public APIs, adding tests and CI, and suggests further enhancements. Start here if you're new to the hackathon or want a gentle introduction to building with Copilot.
+
+🚀 **[Live Demo](https://octocaio.github.io/sinquia_evertec_workshop/W1/)** | 📊 **[Test Coverage](https://codecov.io/gh/octocaio/sinquia_evertec_workshop)** Agents and MCP Hackathon Workshop Challenges
+
 Welcome to the Copilot Hackathon Workshop repository! Here you'll find four hands-on challenge files, each designed as a self-contained markdown document to help you practice building modern web and backend applications.
 
 ## Challenge Overview
