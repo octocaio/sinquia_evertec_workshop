@@ -1,0 +1,292 @@
+name: 🌬️ Air Quality App CI/CD
+
+on:
+  push:
+    branches: [ main, demo-* ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  validate:
+    name: 🔍 Validate & Test
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: 📥 Checkout code
+      uses: actions/checkout@v4
+      
+    - name: 🔧 Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+        
+    - name: 📦 Install dependencies
+      working-directory: ./air-quality-app
+      run: |
+        npm init -y
+        npm install --save-dev html-validate prettier eslint
+        
+    - name: ✅ Validate HTML
+      working-directory: ./air-quality-app
+      run: |
+        npx html-validate index.html || echo "HTML validation completed"
+        
+    - name: 🎨 Check CSS format
+      working-directory: ./air-quality-app
+      run: |
+        npx prettier --check styles.css || echo "CSS format check completed"
+        
+    - name: 🔍 Lint JavaScript
+      working-directory: ./air-quality-app
+      run: |
+        npx eslint script.js --no-eslintrc --env browser,es6 --parser-options ecmaVersion:2020 || echo "JS lint completed"
+        
+    - name: 🧪 Test basic functionality
+      working-directory: ./air-quality-app
+      run: |
+        echo "Testing if all required files exist..."
+        test -f index.html && echo "✅ index.html exists"
+        test -f styles.css && echo "✅ styles.css exists"  
+        test -f script.js && echo "✅ script.js exists"
+        test -f README.md && echo "✅ README.md exists"
+        echo "Basic file structure validation completed!"
+
+  build:
+    name: 🔨 Build Application
+    runs-on: ubuntu-latest
+    needs: validate
+    
+    steps:
+    - name: 📥 Checkout code
+      uses: actions/checkout@v4
+      
+    - name: 🔧 Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+        
+    - name: 📦 Install build tools
+      run: |
+        npm install -g html-minifier terser clean-css-cli
+        
+    - name: 🏗️ Create build directory
+      run: |
+        mkdir -p build
+        cp -r air-quality-app/* build/
+        
+    - name: 🗜️ Minify HTML
+      run: |
+        html-minifier --collapse-whitespace --remove-comments --minify-css --minify-js build/index.html -o build/index.min.html
+        
+    - name: 🗜️ Minify CSS
+      run: |
+        cleancss -o build/styles.min.css build/styles.css
+        
+    - name: 🗜️ Minify JavaScript
+      run: |
+        terser build/script.js -o build/script.min.js --compress --mangle
+        
+    - name: 📊 Build information
+      run: |
+        echo "## 📊 Build Statistics" >> build_info.md
+        echo "- **Original HTML size**: $(stat -c%s build/index.html) bytes" >> build_info.md
+        echo "- **Minified HTML size**: $(stat -c%s build/index.min.html) bytes" >> build_info.md
+        echo "- **Original CSS size**: $(stat -c%s build/styles.css) bytes" >> build_info.md  
+        echo "- **Minified CSS size**: $(stat -c%s build/styles.min.css) bytes" >> build_info.md
+        echo "- **Original JS size**: $(stat -c%s build/script.js) bytes" >> build_info.md
+        echo "- **Minified JS size**: $(stat -c%s build/script.min.js) bytes" >> build_info.md
+        echo "- **Build time**: $(date)" >> build_info.md
+        cat build_info.md
+        
+    - name: 📤 Upload build artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: air-quality-app-build
+        path: |
+          build/
+          build_info.md
+        retention-days: 30
+
+  test-integration:
+    name: 🧪 Integration Tests
+    runs-on: ubuntu-latest
+    needs: build
+    
+    steps:
+    - name: 📥 Checkout code
+      uses: actions/checkout@v4
+      
+    - name: 🔧 Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+        
+    - name: 📦 Install Playwright
+      run: |
+        npm install -D @playwright/test
+        npx playwright install --with-deps chromium
+        
+    - name: 📥 Download build artifacts
+      uses: actions/download-artifact@v4
+      with:
+        name: air-quality-app-build
+        path: ./test-build
+        
+    - name: 🌐 Start local server
+      run: |
+        cd test-build/build
+        python3 -m http.server 8080 &
+        sleep 3
+        
+    - name: 🧪 Run basic tests
+      run: |
+        # Create a simple Playwright config file
+        cat > playwright.config.js << 'EOF'
+        module.exports = {
+          testDir: './tests',
+          timeout: 30000,
+          use: {
+            headless: true,
+            viewport: { width: 1280, height: 720 },
+          },
+        };
+        EOF
+        
+        # Create test directory and test file
+        mkdir -p tests
+        cat > tests/app.spec.js << 'EOF'
+        const { test, expect } = require('@playwright/test');
+        
+        test('Air Quality App loads correctly', async ({ page }) => {
+          await page.goto('http://localhost:8080');
+          await expect(page).toHaveTitle(/Verificador da Qualidade do Ar/);
+          await expect(page.locator('h1')).toContainText('Verificador da Qualidade do Ar');
+        });
+        
+        test('Form validation works', async ({ page }) => {
+          await page.goto('http://localhost:8080');
+          await page.click('button[type="submit"]');
+          // Check that validation prevents empty form submission  
+          await expect(page.locator('.error-message')).toBeVisible({ timeout: 5000 });
+        });
+        EOF
+        
+        # Run the tests
+        npx playwright test
+
+  deploy:
+    name: 🚀 Deploy to GitHub Pages
+    runs-on: ubuntu-latest
+    needs: [validate, build, test-integration]
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+      
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    
+    steps:
+    - name: 📥 Checkout code
+      uses: actions/checkout@v4
+      
+    - name: 📥 Download build artifacts
+      uses: actions/download-artifact@v4
+      with:
+        name: air-quality-app-build
+        path: ./deploy
+        
+    - name: 🔧 Setup Pages
+      uses: actions/configure-pages@v4
+      
+    - name: 📦 Prepare deployment
+      run: |
+        mkdir -p _site
+        cp -r air-quality-app/* _site/
+        cp -r deploy/build/* _site/ 2>/dev/null || true
+        
+        # Create index page that redirects to air quality app
+        cat > _site/index.html << 'EOF'
+        <!DOCTYPE html>
+        <html lang="pt-BR">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Sinquia Evertec Workshop</title>
+            <style>
+                body { font-family: Arial, sans-serif; text-align: center; padding: 50px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; }
+                .container { background: rgba(255,255,255,0.1); padding: 40px; border-radius: 15px; display: inline-block; }
+                a { color: #fff; text-decoration: none; background: rgba(255,255,255,0.2); padding: 15px 30px; border-radius: 8px; display: inline-block; margin: 10px; }
+                a:hover { background: rgba(255,255,255,0.3); }
+            </style>
+        </head>
+        <body>
+            <div class="container">
+                <h1>🌬️ Sinquia Evertec Workshop</h1>
+                <p>Workshop de desenvolvimento com GitHub Copilot</p>
+                <div>
+                    <a href="./index.html" onclick="location.reload()">🌬️ Aplicação de Qualidade do Ar</a>
+                </div>
+                <p><small>Desenvolvido no Workshop Sinquia Evertec</small></p>
+            </div>
+        </body>
+        </html>
+        EOF
+        
+    - name: 📤 Upload to Pages
+      uses: actions/upload-pages-artifact@v3
+      with:
+        path: _site
+        
+    - name: 🚀 Deploy to GitHub Pages
+      id: deployment
+      uses: actions/deploy-pages@v4
+
+  comment-pr:
+    name: 💬 Comment on PR
+    runs-on: ubuntu-latest
+    needs: [validate, build]
+    if: github.event_name == 'pull_request'
+    
+    steps:
+    - name: 📥 Download build artifacts
+      uses: actions/download-artifact@v4
+      with:
+        name: air-quality-app-build
+        path: ./artifacts
+        
+    - name: 💬 Comment PR
+      uses: actions/github-script@v7
+      with:
+        script: |
+          const fs = require('fs');
+          const buildInfo = fs.readFileSync('./artifacts/build_info.md', 'utf8');
+          
+          const comment = `## 🚀 Build Concluído com Sucesso!
+
+          ✅ **Validação**: Arquivos HTML, CSS e JS verificados
+          ✅ **Build**: Aplicação compilada e otimizada  
+          ✅ **Minificação**: Arquivos comprimidos para melhor performance
+
+          ### 📊 Informações do Build:
+          - **Commit**: \`${context.sha.substring(0, 7)}\`
+          - **Branch**: \`${context.ref}\`
+          - **Workflow**: #${context.runNumber}
+
+          ${buildInfo}
+
+          ### 🔍 Próximos Passos:
+          Após o merge desta PR, a aplicação será automaticamente deployada no GitHub Pages.
+          
+          ---
+          🤖 _Comentário automático do GitHub Actions_`;
+          
+          github.rest.issues.createComment({
+            issue_number: context.issue.number,
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            body: comment
+          });

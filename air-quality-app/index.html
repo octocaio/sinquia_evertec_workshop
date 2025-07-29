@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verificador da Qualidade do Ar</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🌬️ Verificador da Qualidade do Ar</h1>
+            <p>Consulte a qualidade do ar em sua cidade</p>
+        </header>
+
+        <main>
+            <form id="locationForm" class="location-form">
+                <div class="form-group">
+                    <label for="city">Cidade *</label>
+                    <input 
+                        type="text" 
+                        id="city" 
+                        name="city" 
+                        placeholder="Ex: São Paulo, Rio de Janeiro"
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="state">Estado/Província/Região *</label>
+                    <input 
+                        type="text" 
+                        id="state" 
+                        name="state" 
+                        placeholder="Ex: SP, RJ, California"
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="country">País</label>
+                    <input 
+                        type="text" 
+                        id="country" 
+                        name="country" 
+                        placeholder="Brasil, EUA (padrão), França, etc."
+                        value="EUA"
+                    >
+                    <small class="help-text">Se deixar em branco, será assumido EUA como padrão</small>
+                </div>
+
+                <button type="submit" class="submit-btn">
+                    🔍 Verificar Qualidade do Ar
+                </button>
+            </form>
+
+            <div id="errorMessage" class="error-message" style="display: none;"></div>
+            <div id="results" class="results" style="display: none;">
+                <h2>Resultados da Busca</h2>
+                <div id="locationInfo" class="location-info"></div>
+            </div>
+        </main>
+
+        <footer>
+            <p>Workshop Sinquia Evertec - Qualidade do Ar</p>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
