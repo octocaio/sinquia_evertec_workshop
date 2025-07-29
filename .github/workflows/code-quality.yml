@@ -1,0 +1,59 @@
+name: ✨ Code Quality
+
+on:
+  push:
+    branches: [ main, demo-* ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  quality:
+    name: 🔍 Code Quality Check
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: 📥 Checkout
+      uses: actions/checkout@v4
+      
+    - name: 🔧 Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+        
+    - name: 📦 Install tools
+      run: |
+        npm install -g prettier eslint html-validate
+        
+    - name: 🎨 Check code formatting
+      run: |
+        echo "Checking code formatting..."
+        if [ -d "air-quality-app" ]; then
+          cd air-quality-app
+          echo "✅ Checking CSS formatting..."
+          prettier --check styles.css || echo "⚠️ CSS formatting could be improved"
+          
+          echo "✅ Checking JS formatting..."  
+          prettier --check script.js || echo "⚠️ JS formatting could be improved"
+          
+          echo "✅ Checking HTML structure..."
+          html-validate index.html || echo "⚠️ HTML could be improved"
+        fi
+        
+    - name: 📊 Project statistics
+      run: |
+        echo "## 📊 Project Statistics" > stats.md
+        echo "- **Total files**: $(find . -type f -name '*.html' -o -name '*.css' -o -name '*.js' -o -name '*.md' | wc -l)" >> stats.md
+        echo "- **HTML files**: $(find . -name '*.html' | wc -l)" >> stats.md
+        echo "- **CSS files**: $(find . -name '*.css' | wc -l)" >> stats.md
+        echo "- **JS files**: $(find . -name '*.js' | wc -l)" >> stats.md
+        echo "- **Documentation files**: $(find . -name '*.md' | wc -l)" >> stats.md
+        echo "- **Total lines of code**: $(find . -name '*.html' -o -name '*.css' -o -name '*.js' | xargs wc -l | tail -1 | awk '{print $1}')" >> stats.md
+        echo "- **Analysis date**: $(date)" >> stats.md
+        cat stats.md
+        
+    - name: 📤 Upload stats
+      uses: actions/upload-artifact@v4
+      with:
+        name: project-stats
+        path: stats.md
+        retention-days: 7

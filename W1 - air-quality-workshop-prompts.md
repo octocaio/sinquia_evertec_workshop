@@ -1,124 +1,122 @@
-# Air Quality Checker Web App: Copilot Agent Prompts
+# Aplicação Web de Verificação da Qualidade do Ar: Prompts do Copilot Agent
 
-Below are example prompt sets to guide a developer step-by-step as they build an **Air Quality Checker** web app using Copilot in agent mode. Prompts are designed to support mainstream languages and frameworks (e.g., JavaScript/React, Python/Flask, etc.), and are structured for progressive enhancement.
+Abaixo estão conjuntos de prompts de exemplo para orientar um desenvolvedor passo a passo na criação de uma aplicação web **Verificador da Qualidade do Ar** usando o Copilot no modo agente. Os prompts são projetados para dar suporte às principais linguagens e frameworks (ex.: JavaScript/React, Python/Flask, etc.) e são estruturados para melhoria progressiva.
 
 ---
 
-## 1. Basic Web App Scaffold Prompt
+## 1. Prompt de Estrutura Básica da Aplicação Web
 
-**Goal:**  
-Create a web app that lets the user input city, state/province/region, and country (or city & state for USA by default).
+**Objetivo:**  
+Criar uma aplicação web que permita ao usuário inserir cidade, estado/província/região e país (ou cidade e estado para BRASIL por padrão).  
 
 **Prompt:**
 ```
-Create a minimal web app that allows a user to enter either:
-- a city, state/province/region, and country
-- or, just a city and state (assuming USA as the default country).
+Crie uma aplicação web mínima que permita ao usuário inserir:
+- uma cidade, estado/província/região e país
+- ou apenas uma cidade e estado (assumindo EUA como país padrão).
 
-Show a simple form with the required input fields and a submit button. The app should have basic client-side validation to ensure all required fields are filled. Use any popular frontend framework or plain HTML/JS, and set up the basic project structure.
+Mostre um formulário simples com os campos de entrada necessários e um botão de envio. A aplicação deve ter validação básica do lado cliente para garantir que todos os campos obrigatórios sejam preenchidos. Use qualquer framework frontend popular ou HTML/JS simples e configure a estrutura básica do projeto.
 ```
 
 ---
 
-## 2. Add AQI Data Fetching and Display
+## 2. Adicionar Busca e Exibição de Dados de IQA
 
-**Goal:**  
-Enhance the app to fetch air quality data from a public API and display AQI and relevant info.
+**Objetivo:**  
+Aprimorar a aplicação para buscar dados de qualidade do ar de uma API pública e exibir o IQA e informações relevantes.
 
 **Prompt:**
 ```
-Update the web app to fetch the current air quality index (AQI) and other relevant air quality information for the location the user enters.
+Atualize a aplicação web para buscar o índice de qualidade do ar (IQA) atual e outras informações relevantes sobre qualidade do ar para a localização que o usuário inserir.
 
-- Use the Open-Meteo Air Quality API (https://open-meteo.com/en/docs/air-quality-api), which does not require authentication or an API token.
-- When the form is submitted, convert the user’s location input into geographic coordinates (latitude and longitude) using a public geocoding API (such as Nominatim: https://nominatim.openstreetmap.org/).
-- Fetch the AQI and display it on the page, along with key details such as the main pollutant, measurement time, and any health advisories if available.
-- Handle errors gracefully (e.g., location not found, API issues).
-- Organize the code for maintainability.
+- Use a API de Qualidade do Ar Open-Meteo (https://open-meteo.com/en/docs/air-quality-api), que não requer autenticação ou token de API.
+- Quando o formulário for enviado, converta a entrada de localização do usuário em coordenadas geográficas (latitude e longitude) usando uma API de geocodificação pública (como Nominatim: https://nominatim.openstreetmap.org/).
+- Busque o IQA e exiba-o na página, junto com detalhes principais como o poluente principal, horário da medição e quaisquer avisos de saúde se disponíveis.
+- Trate erros de forma elegante (ex.: localização não encontrada, problemas de API).
+- Organize o código para manutenibilidade.
 ```
 
 ---
 
-## 3. Optional: Add Unit/Integration Tests
+## 3. Opcional: Adicionar Testes Unitários/Integração
 
-**Goal:**  
-Add testing to the project.
+**Objetivo:**  
+Adicionar testes ao projeto.
 
 **Prompt:**
 ```
-Add a test suite for the web app.
+Adicione um conjunto de testes para a aplicação web.
 
-- Include both unit and integration tests.
-- Test form validation, the API fetch logic, and the rendering of AQI results.
-- Use a popular testing framework appropriate for the tech stack (e.g., Jest for React, Pytest for Flask, etc.).
-- Provide example test cases for key components and functions.
+- Inclua testes unitários e de integração.
+- Teste a validação do formulário, a lógica de busca da API e a renderização dos resultados do IQA.
 ```
-
 ---
 
-## 4. Optional: Add Build & Test Automation with GitHub Actions
 
-**Goal:**  
-Set up CI to automate testing and builds.
+## 4. Opcional: Adicionar Automação de Build e Teste com GitHub Actions
+
+**Objetivo:**  
+Configurar CI para automatizar testes e builds.
 
 **Prompt:**
 ```
-Add a GitHub Actions workflow to the project.
+Adicione um workflow do GitHub Actions ao projeto.
 
-- The workflow should run automatically on pull requests and pushes to the main branch.
-- It should install dependencies, build the app (if required), and run all tests.
-- Use a template appropriate for the chosen language and framework.
-- Place the workflow YAML in the .github/workflows directory.
+- O workflow deve ser executado automaticamente em pull requests e pushes para a branch principal.
+- Deve instalar dependências, fazer build da aplicação (se necessário) e executar todos os testes.
+- Use um template apropriado para a linguagem e framework escolhidos.
+- Coloque o YAML do workflow no diretório .github/workflows.
 ```
 
 ---
 
-## 5. Further Workshop Extension Suggestions
+## 5. Sugestões de Extensão Adicional do Workshop
 
-Here are additional ways to extend the Air Quality Checker app, suitable for workshop participants who finish early or want to explore more advanced features:
+Aqui estão maneiras adicionais de estender a aplicação Verificador da Qualidade do Ar, adequadas para participantes do workshop que terminarem mais cedo ou quiserem explorar recursos mais avançados:
 
-### a. **Store and Visualize Search History**
-- Allow users to save each search in an open source database (such as SQLite or PostgreSQL).
-- Display a table or chart showing AQI trends for the cities previously searched.
+### a. **Armazenar e Visualizar Histórico de Buscas**
+- Permitir que usuários salvem cada busca em um banco de dados open source (como SQLite ou PostgreSQL).
+- Exibir uma tabela ou gráfico mostrando tendências de IQA para as cidades pesquisadas anteriormente.
 
-### b. **Favorite Locations**
-- Let users mark locations as favorites and quickly re-check AQI.
-- Store favorites in the database and display them on a dashboard.
+### b. **Localizações Favoritas**
+- Permitir que usuários marquem localizações como favoritas e rapidamente verifiquem o IQA novamente.
+- Armazenar favoritos no banco de dados e exibi-los em um painel.
 
-### c. **Compare Multiple Cities**
-- Enable users to enter and compare AQI data for two or more cities side-by-side.
-- Visualize differences using charts or color-coded cards.
+### c. **Comparar Múltiplas Cidades**
+- Permitir que usuários insiram e comparem dados de IQA para duas ou mais cidades lado a lado.
+- Visualizar diferenças usando gráficos ou cartões codificados por cores.
 
-### d. **Map Integration**
-- Show searched or favorite locations on a map (e.g., using Leaflet.js or Google Maps API).
-- Display AQI as colored pins or heatmaps.
+### d. **Integração com Mapa**
+- Mostrar localizações pesquisadas ou favoritas em um mapa (ex.: usando Leaflet.js ou Google Maps API).
+- Exibir IQA como pinos coloridos ou mapas de calor.
 
-### e. **Mobile Responsiveness & Accessibility**
-- Improve the user interface for mobile devices.
-- Add accessibility features such as keyboard navigation and ARIA labels.
+### e. **Responsividade Mobile e Acessibilidade**
+- Melhorar a interface de usuário para dispositivos móveis.
+- Adicionar recursos de acessibilidade como navegação por teclado e labels ARIA.
 
-### f. **Health Recommendations**
-- Display contextual health guidance based on AQI levels (e.g., "Unhealthy for Sensitive Groups").
-- Optionally, link to local government or WHO recommendations.
+### f. **Recomendações de Saúde**
+- Exibir orientações de saúde contextuais baseadas nos níveis de IQA (ex.: "Prejudicial para Grupos Sensíveis").
+- Opcionalmente, linkar para recomendações do governo local ou da OMS.
 
-### g. **Localization & Internationalization**
-- Support multiple languages for the app interface.
-- Allow users to choose their preferred language and units (e.g., µg/m³ vs. ppm).
+### g. **Localização e Internacionalização**
+- Dar suporte a múltiplas linguagens para a interface da aplicação.
+- Permitir que usuários escolham sua linguagem e unidades preferidas (ex.: µg/m³ vs. ppm).
 
-### h. **Offline Support**
-- Allow users to view recent AQI results offline using service workers or local storage.
+### h. **Suporte Offline**
+- Permitir que usuários vejam resultados recentes de IQA offline usando service workers ou armazenamento local.
 
-### i. **User Accounts (Advanced)**
-- Add optional user login so people can save their history and favorites across devices (using an open source authentication solution).
+### i. **Contas de Usuário (Avançado)**
+- Adicionar login opcional de usuário para que pessoas possam salvar seu histórico e favoritos entre dispositivos (usando uma solução de autenticação open source).
 
 ---
 
-### How to Use These Prompts
+### Como Usar Estes Prompts
 
-1. **Start with the first prompt** to scaffold your web app.
-2. **Use the second prompt** to add core AQI functionality.
-3. **Optionally, use the third and fourth prompts** to add tests and CI.
-4. **Explore further extensions** as time allows or for more advanced workshop sessions.
+1. **Comece com o primeiro prompt** para estruturar sua aplicação web.
+2. **Use o segundo prompt** para adicionar funcionalidade central de IQA.
+3. **Opcionalmente, use o terceiro e quarto prompts** para adicionar testes e CI.
+4. **Explore extensões adicionais** conforme o tempo permitir ou para sessões de workshop mais avançadas.
 
-These prompts are intentionally open-ended so Copilot can tailor its output to your chosen tech stack. You can further specify the language or framework in your prompt for more focused results (e.g., "using Python and Flask," "with React," etc.).
+Estes prompts são intencionalmente abertos para que o Copilot possa adaptar sua saída à sua stack tecnológica escolhida. Você pode especificar ainda mais a linguagem ou framework em seu prompt para resultados mais focados (ex.: "usando Python e Flask", "com React", etc.).
 
-Let me know if you want sample outputs for a specific stack!
+Me avise se você quiser exemplos de saída para uma stack específica!

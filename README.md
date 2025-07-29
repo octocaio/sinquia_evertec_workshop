@@ -1,48 +1,92 @@
-# Copilot Agents and MCP Hackathon Workshop Challenges
+# Desafios do Workshop de Hackathon de Agentes Copilot e MCP
 
-[![Test Suite](https://github.com/octocaio/sinquia_evertec_workshop/actions/workflows/test.yml/badge.svg)](https://github.com/octocaio/sinquia_evertec_workshop/actions/workflows/test.yml)
-[![Deploy](https://github.com/octocaio/sinquia_evertec_workshop/actions/workflows/deploy.yml/badge.svg)](https://github.com/octocaio/sinquia_evertec_workshop/actions/workflows/deploy.yml)
-[![codecov](https://codecov.io/gh/octocaio/sinquia_evertec_workshop/branch/main/graph/badge.svg)](https://codecov.io/gh/octocaio/sinquia_evertec_workshop)
+Bem-vindo ao repositório do Workshop de Hackathon Copilot! Aqui você encontrará quatro arquivos de desafios práticos, cada um projetado como um documento markdown independente para ajudá-lo a praticar a construção de aplicações web e backend modernas.
 
-Welcome to the Copilot Hackathon Workshop repository! Here you'll find four hands-on challenge files, each designed as a self-contained markdown document to help you practice building modern web and backend applications.
 
-## Challenge Overview
+## 🚀 Status do Projeto
 
-**1. [W1 - Air Quality Workshop Prompts](./W1%20-%20air-quality-workshop-prompts.md)** 🌍  
-*Introductory Challenge – Recommended for First-Time Users*  
-This is a simple, step-by-step challenge to build an Air Quality Checker web app. It guides you through scaffolding a frontend, connecting to public APIs, adding tests and CI, and suggests further enhancements. Start here if you're new to the hackathon or want a gentle introduction to building with Copilot.
+[![🌬️ Air Quality App CI/CD](https://github.com/octocaio/sinquia_evertec_workshop/actions/workflows/ci-cd.yml/badge.svg)](https://github.com/octocaio/sinquia_evertec_workshop/actions/workflows/ci-cd.yml)
+[![🧪 Air Quality App Tests](https://github.com/octocaio/sinquia_evertec_workshop/actions/workflows/test-air-quality-app.yml/badge.svg)](https://github.com/octocaio/sinquia_evertec_workshop/actions/workflows/test-air-quality-app.yml)
+[![✨ Code Quality](https://github.com/octocaio/sinquia_evertec_workshop/actions/workflows/code-quality.yml/badge.svg)](https://github.com/octocaio/sinquia_evertec_workshop/actions/workflows/code-quality.yml)
 
-🚀 **[Live Demo](https://octocaio.github.io/sinquia_evertec_workshop/W1/)** | 📊 **[Test Coverage](https://codecov.io/gh/octocaio/sinquia_evertec_workshop)** Agents and MCP Hackathon Workshop Challenges
+## 🌬️ Aplicação Implementada
 
-Welcome to the Copilot Hackathon Workshop repository! Here you'll find four hands-on challenge files, each designed as a self-contained markdown document to help you practice building modern web and backend applications.
+**[Verificador da Qualidade do Ar](./air-quality-app/)** - ✅ **CONCLUÍDO**
 
-## Challenge Overview
+Uma aplicação web completa que permite consultar a qualidade do ar em tempo real para qualquer localização no mundo.
 
-**1. [W1 - Air Quality Workshop Prompts](./W1%20-%20air-quality-workshop-prompts.md)**  
-*Introductory Challenge – Recommended for First-Time Users*  
-This is a simple, step-by-step challenge to build an Air Quality Checker web app. It guides you through scaffolding a frontend, connecting to public APIs, adding tests and CI, and suggests further enhancements. Start here if you’re new to the hackathon or want a gentle introduction to building with Copilot.
+**🔗 Demo ao vivo**: [https://octocaio.github.io/sinquia_evertec_workshop](https://octocaio.github.io/sinquia_evertec_workshop)
 
-**2. [W2.1 - Crypto Dashboard Challenge](./W2.1%20-%20crypto-dashboard-challenge.md)**  
-Create a real-time cryptocurrency dashboard web app. Implement features like market overview, search/filter, price charts, a watchlist, and secure API handling. Ideal for those looking to deepen their frontend and API integration skills.
+**Funcionalidades**:
+- 🌍 Geocodificação inteligente via Nominatim API
+- 🌬️ Dados de qualidade do ar em tempo real via Open-Meteo API
+- 📊 IQA Europeu e Americano com códigos de cores
+- 🧪 6 poluentes principais monitorados
+- 💡 Avisos de saúde contextuais
+- 📱 Interface responsiva e moderna
+- ✅ CI/CD completo com GitHub Actions
 
-**3. [W2.2 - Sports Scores Challenge](./W2.2%20-%20sports-scores-challenge.md)**  
-Build a web app for real-time sports scores, supporting live data, filtering, favorites, and accessibility. This challenge emphasizes responsive design and real-time updates.
+## Visão Geral dos Desafios
 
-**4. [W2.3 - Inventory MCP Challenge](./W2.3%20-%20inventory-mcp-challenge.md)**  
-Develop a backend server for warehouse inventory management, implementing the Model Context Protocol (MCP). You'll handle CRUD operations, stock movements, query/search, compliance with MCP, and CI automation.
+**1. [W1 - Prompts do Workshop de Qualidade do Ar](./W1%20-%20air-quality-workshop-prompts.md)** ✅ **IMPLEMENTADO**  
+*Desafio Introdutório – Recomendado para Usuários Iniciantes*  
+Este é um desafio simples e passo a passo para construir uma aplicação web de Verificação da Qualidade do Ar. Ele orienta você através da estruturação de um frontend, conexão com APIs públicas, adição de testes e CI, e sugere melhorias adicionais. **Implementação completa disponível em [`air-quality-app/`](./air-quality-app/)**
 
----
+**2. [W2.1 - Desafio Dashboard de Criptomoedas](./W2.1%20-%20crypto-dashboard-challenge.md)**  
+Crie uma aplicação web de dashboard de criptomoedas em tempo real. Implemente recursos como visão geral do mercado, busca/filtro, gráficos de preços, lista de observação e manuseio seguro de API. Ideal para aqueles que buscam aprofundar suas habilidades de frontend e integração de API.
 
-## How to Use These Challenges
+**3. [W2.2 - Desafio de Placares Esportivos](./W2.2%20-%20sports-scores-challenge.md)**  
+Construa uma aplicação web para placares esportivos em tempo real, com suporte a dados ao vivo, filtragem, favoritos e acessibilidade. Este desafio enfatiza design responsivo e atualizações em tempo real.
 
-1. **Download** any of the `.md` challenge files above.
-2. **Create a new repository** under your own corporate GitHub account.
-3. **Add the markdown file** to your new repo and use it as your project brief.
-4. **Follow the instructions** in the challenge to develop your solution.
-5. **Look out for the curve balls** in the instructions - some external APIs might have changed over time. Be flexible and look for ways around inconsistencies, including considering alternative and equivalent APIs.
-
-These challenges are designed for experimentation and learning. Feel free to extend, modify, or share your solutions!
+**4. [W2.3 - Desafio MCP de Inventário](./W2.3%20-%20inventory-mcp-challenge.md)**  
+Desenvolva um servidor backend para gerenciamento de inventário de armazém, implementando o Model Context Protocol (MCP). Você lidará com operações CRUD, movimentações de estoque, consulta/busca, conformidade com MCP e automação de CI.
 
 ---
 
-Happy hacking!
+## 🛠️ Tecnologias e Ferramentas
+
+### Aplicação de Qualidade do Ar
+- **Frontend**: HTML5, CSS3, JavaScript (ES6+)
+- **APIs**: Nominatim (geocodificação), Open-Meteo (qualidade do ar)
+- **CI/CD**: GitHub Actions
+- **Deploy**: GitHub Pages
+- **Testes**: Playwright
+- **Qualidade**: Prettier, ESLint, html-validate
+
+### GitHub Actions Workflows
+- **🌬️ CI/CD Principal**: Build, teste e deploy automático
+- **🧪 Testes Específicos**: Testes focados na aplicação
+- **✨ Qualidade de Código**: Validação e métricas
+
+## Como Usar Estes Desafios
+
+### 🚀 Para a Aplicação de Qualidade do Ar (Implementada)
+1. **Clone o repositório**: `git clone https://github.com/octocaio/sinquia_evertec_workshop.git`
+2. **Acesse a aplicação**: Navegue para `air-quality-app/` e abra `index.html`
+3. **Execute localmente**: `npm start` ou abra o arquivo diretamente no navegador
+4. **Veja o demo online**: [https://octocaio.github.io/sinquia_evertec_workshop](https://octocaio.github.io/sinquia_evertec_workshop)
+
+### 📋 Para Outros Desafios
+1. **Baixe** qualquer um dos arquivos de desafio `.md` acima.
+2. **Crie um novo repositório** em sua própria conta corporativa do GitHub.
+3. **Adicione o arquivo markdown** ao seu novo repositório e use-o como seu briefing do projeto.
+4. **Siga as instruções** no desafio para desenvolver sua solução.
+5. **Fique atento às pegadinhas** nas instruções - algumas APIs externas podem ter mudado ao longo do tempo. Seja flexível e procure maneiras de contornar inconsistências, incluindo considerar APIs alternativas e equivalentes.
+
+## 📊 Scripts Disponíveis
+
+```bash
+npm start          # Inicia servidor local na porta 8080
+npm run build      # Cria build da aplicação
+npm run lint       # Verifica qualidade do código
+npm run format     # Formata o código automaticamente
+npm test           # Executa via GitHub Actions
+```
+
+Estes desafios são projetados para experimentação e aprendizado. Sinta-se livre para estender, modificar ou compartilhar suas soluções!
+
+---
+
+**🌟 Workshop Sinquia Evertec** - Demonstração completa de desenvolvimento com GitHub Copilot 🚀
+
+Bom hacking!
