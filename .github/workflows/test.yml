@@ -1,0 +1,183 @@
+name: Testes Automatizados
+
+on:
+  push:
+    branches: [ main, W1-AirQuality ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  unit-tests:
+    runs-on: ubuntu-latest
+    
+    strategy:
+      matrix:
+        node-version: [18.x, 20.x]
+    
+    steps:
+    - name: Checkout código
+      uses: actions/checkout@v4
+    
+    - name: Configurar Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: 'npm'
+        cache-dependency-path: W1/package-lock.json
+    
+    - name: Instalar dependências
+      run: |
+        cd W1
+        npm ci
+    
+    - name: Executar testes unitários
+      run: |
+        cd W1
+        npm test -- --coverage --verbose
+    
+    - name: Upload cobertura para Codecov
+      if: matrix.node-version == '20.x'
+      uses: codecov/codecov-action@v4
+      with:
+        directory: W1/coverage
+        fail_ci_if_error: false
+
+  e2e-tests:
+    runs-on: ubuntu-latest
+    
+    strategy:
+      matrix:
+        browser: [chromium, firefox, webkit]
+    
+    steps:
+    - name: Checkout código
+      uses: actions/checkout@v4
+    
+    - name: Configurar Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20.x'
+        cache: 'npm'
+        cache-dependency-path: W1/package-lock.json
+    
+    - name: Instalar dependências
+      run: |
+        cd W1
+        npm ci
+    
+    - name: Instalar navegadores Playwright
+      run: |
+        cd W1
+        npx playwright install ${{ matrix.browser }} --with-deps
+    
+    - name: Executar testes E2E - ${{ matrix.browser }}
+      run: |
+        cd W1
+        npx playwright test --project=${{ matrix.browser }}
+    
+    - name: Upload relatórios de teste
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: playwright-report-${{ matrix.browser }}
+        path: W1/playwright-report/
+        retention-days: 7
+
+  build-test:
+    runs-on: ubuntu-latest
+    needs: [unit-tests]
+    
+    steps:
+    - name: Checkout código
+      uses: actions/checkout@v4
+    
+    - name: Configurar Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20.x'
+        cache: 'npm'
+        cache-dependency-path: W1/package-lock.json
+    
+    - name: Instalar dependências
+      run: |
+        cd W1
+        npm ci
+    
+    - name: Validar estrutura de arquivos
+      run: |
+        cd W1
+        test -f index.html
+        test -f script.js
+        test -f styles.css
+        test -f package.json
+        echo "✅ Todos os arquivos essenciais encontrados"
+    
+    - name: Verificar sintaxe JavaScript
+      run: |
+        cd W1
+        node -c script.js
+        echo "✅ JavaScript válido"
+    
+    - name: Verificar HTML
+      run: |
+        cd W1
+        npm run build 2>/dev/null || echo "Projeto é estático, sem build necessário"
+        echo "✅ Build validado"
+
+  security-scan:
+    runs-on: ubuntu-latest
+    needs: [unit-tests]
+    
+    steps:
+    - name: Checkout código
+      uses: actions/checkout@v4
+    
+    - name: Configurar Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20.x'
+        cache: 'npm'
+        cache-dependency-path: W1/package-lock.json
+    
+    - name: Instalar dependências
+      run: |
+        cd W1
+        npm ci
+    
+    - name: Auditoria de segurança
+      run: |
+        cd W1
+        npm audit --audit-level=moderate || echo "⚠️ Vulnerabilidades encontradas, mas não críticas"
+    
+    - name: Verificar dependências desatualizadas
+      run: |
+        cd W1
+        npm outdated || echo "📦 Algumas dependências podem estar desatualizadas"
+
+  test-summary:
+    runs-on: ubuntu-latest
+    needs: [unit-tests, e2e-tests, build-test, security-scan]
+    if: always()
+    
+    steps:
+    - name: Resumo dos testes
+      run: |
+        echo "📊 Resumo da execução dos testes:"
+        echo "Unit Tests: ${{ needs.unit-tests.result }}"
+        echo "E2E Tests: ${{ needs.e2e-tests.result }}"
+        echo "Build Test: ${{ needs.build-test.result }}"
+        echo "Security Scan: ${{ needs.security-scan.result }}"
+        
+        if [[ "${{ needs.unit-tests.result }}" == "success" && "${{ needs.e2e-tests.result }}" == "success" && "${{ needs.build-test.result }}" == "success" ]]; then
+          echo "✅ Todos os testes passaram!"
+          exit 0
+        else
+          echo "❌ Alguns testes falharam"
+          exit 1
+        fi

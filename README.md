@@ -2,6 +2,7 @@
 
 Bem-vindo ao repositório do Workshop de Hackathon Copilot! Aqui você encontrará quatro arquivos de desafios práticos, cada um projetado como um documento markdown independente para ajudá-lo a praticar a construção de aplicações web e backend modernas.
 
+
 ## 🚀 Status do Projeto
 
 [![🌬️ Air Quality App CI/CD](https://github.com/octocaio/sinquia_evertec_workshop/actions/workflows/ci-cd.yml/badge.svg)](https://github.com/octocaio/sinquia_evertec_workshop/actions/workflows/ci-cd.yml)
