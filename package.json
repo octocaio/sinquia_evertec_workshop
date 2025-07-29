@@ -1,0 +1,44 @@
+{
+  "name": "sinquia-evertec-workshop",
+  "version": "1.0.0",
+  "description": "Workshop de desenvolvimento com GitHub Copilot para a Sinquia Evertec",
+  "scripts": {
+    "start": "cd air-quality-app && python3 -m http.server 8080",
+    "build": "mkdir -p build && cp -r air-quality-app/* build/",
+    "test": "echo 'Use GitHub Actions for testing'",
+    "lint": "prettier --check air-quality-app/*.{css,js} && html-validate air-quality-app/index.html",
+    "format": "prettier --write air-quality-app/*.{css,js}"
+  },
+  "keywords": [
+    "github-copilot",
+    "workshop",
+    "air-quality",
+    "javascript",
+    "html",
+    "css",
+    "sinquia",
+    "evertec"
+  ],
+  "author": "Workshop Sinquia Evertec",
+  "license": "MIT",
+  "devDependencies": {
+    "@playwright/test": "^1.40.0",
+    "prettier": "^3.1.0",
+    "eslint": "^8.56.0",
+    "html-validate": "^8.7.0",
+    "html-minifier": "^4.0.0",
+    "terser": "^5.26.0",
+    "clean-css-cli": "^5.6.2"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/octocaio/sinquia_evertec_workshop.git"
+  },
+  "homepage": "https://octocaio.github.io/sinquia_evertec_workshop",
+  "bugs": {
+    "url": "https://github.com/octocaio/sinquia_evertec_workshop/issues"
+  }
+}
