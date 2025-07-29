@@ -1,0 +1,67 @@
+{
+  "name": "sinquia-evertec-air-quality-monitor",
+  "version": "1.0.0",
+  "description": "Monitor de Qualidade do Ar - Aplicação web para consulta de índices de qualidade do ar em tempo real",
+  "keywords": [
+    "air-quality",
+    "aqi",
+    "pollution",
+    "environment",
+    "weather",
+    "health",
+    "sinquia",
+    "evertec"
+  ],
+  "homepage": "https://octocaio.github.io/sinquia_evertec_workshop/",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/octocaio/sinquia_evertec_workshop.git"
+  },
+  "author": {
+    "name": "Sinquia Evertec Workshop",
+    "url": "https://sinqia.com.br"
+  },
+  "license": "MIT",
+  "scripts": {
+    "dev": "npx http-server location-app -p 3000 -o",
+    "build": "npm run validate && npm run optimize",
+    "validate": "npm run validate:html && npm run validate:css && npm run validate:js",
+    "validate:html": "npx html-validate location-app/*.html",
+    "validate:css": "npx stylelint 'location-app/**/*.css'",
+    "validate:js": "npx eslint location-app/**/*.js --parser-options=ecmaVersion:2020",
+    "optimize": "npm run optimize:setup && npm run optimize:html && npm run optimize:css && npm run optimize:js",
+    "optimize:setup": "mkdir -p dist && cp -r location-app/* dist/",
+    "optimize:html": "npx html-minifier-terser --input-dir dist --output-dir dist --file-ext html --collapse-whitespace --remove-comments --minify-css true --minify-js true",
+    "optimize:css": "npx cleancss -o dist/styles.css dist/styles.css",
+    "optimize:js": "npx terser dist/script.js -o dist/script.js --compress --mangle --toplevel",
+    "serve": "npx http-server dist -p 8080 -o",
+    "clean": "rm -rf dist node_modules package-lock.json"
+  },
+  "devDependencies": {
+    "html-validate": "^8.0.0",
+    "htmlhint": "^1.1.0",
+    "stylelint": "^16.0.0",
+    "stylelint-config-standard": "^36.0.0",
+    "eslint": "^8.0.0",
+    "html-minifier-terser": "^7.0.0",
+    "clean-css-cli": "^5.0.0",
+    "terser": "^5.0.0",
+    "http-server": "^14.0.0"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not dead",
+    "not ie 11"
+  ],
+  "files": [
+    "location-app/",
+    "dist/",
+    "README.md",
+    "LICENSE"
+  ]
+}

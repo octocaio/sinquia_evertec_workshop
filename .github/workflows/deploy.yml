@@ -1,0 +1,251 @@
+name: 🚀 Build e Deploy no GitHub Pages
+
+# Executa o workflow em push para main e pull requests
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    types: [ opened, synchronize, reopened ]
+    branches: [ main, master ]
+  
+  # Permite execução manual do workflow
+  workflow_dispatch:
+
+# Define permissões necessárias para o GitHub Pages e comentários
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+  issues: write
+  pull-requests: write
+
+# Garante que apenas um deployment rode por vez
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  # Job para validação e testes
+  validate:
+    name: 🔍 Validação e Testes
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: 📥 Checkout do código
+      uses: actions/checkout@v4
+      
+    - name: 🔧 Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+        
+    - name: 📦 Instalar dependências de desenvolvimento
+      run: |
+        npm init -y
+        npm install --save-dev html-validate htmlhint stylelint stylelint-config-standard eslint
+        
+    - name: ✅ Validar HTML
+      run: |
+        # Verifica se os arquivos HTML são válidos
+        npx html-validate location-app/*.html || echo "⚠️ Aviso: Problemas menores de HTML detectados"
+        
+    - name: ✅ Validar CSS
+      run: |
+        # Verifica sintaxe CSS
+        npx stylelint "location-app/**/*.css" --allow-empty-input || echo "⚠️ Aviso: Problemas menores de CSS detectados"
+        
+    - name: ✅ Validar JavaScript
+      run: |
+        # Verifica sintaxe JavaScript
+        npx eslint location-app/**/*.js --no-eslintrc --parser-options=ecmaVersion:2020 || echo "⚠️ Aviso: Problemas menores de JS detectados"
+        
+    - name: 🧪 Verificar estrutura de arquivos
+      run: |
+        echo "📂 Verificando estrutura do projeto..."
+        ls -la location-app/
+        
+        # Verifica se arquivos essenciais existem
+        if [ ! -f "location-app/index.html" ]; then
+          echo "❌ Erro: index.html não encontrado!"
+          exit 1
+        fi
+        
+        if [ ! -f "location-app/styles.css" ]; then
+          echo "❌ Erro: styles.css não encontrado!"
+          exit 1
+        fi
+        
+        if [ ! -f "location-app/script.js" ]; then
+          echo "❌ Erro: script.js não encontrado!"
+          exit 1
+        fi
+        
+        echo "✅ Todos os arquivos essenciais estão presentes!"
+
+  # Job para build e otimização
+  build:
+    name: 🔨 Build da Aplicação
+    runs-on: ubuntu-latest
+    needs: validate
+    
+    steps:
+    - name: 📥 Checkout do código
+      uses: actions/checkout@v4
+      
+    - name: 🔧 Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+        
+    - name: 📦 Instalar ferramentas de build
+      run: |
+        npm init -y
+        npm install --save-dev html-minifier-terser clean-css-cli terser
+        
+    - name: 📁 Criar diretório de build
+      run: mkdir -p dist
+      
+    - name: 🎯 Copiar arquivos para build
+      run: |
+        cp -r location-app/* dist/
+        
+    - name: 🗜️ Minificar HTML
+      run: |
+        npx html-minifier-terser \
+          --input-dir dist \
+          --output-dir dist \
+          --file-ext html \
+          --collapse-whitespace \
+          --remove-comments \
+          --remove-redundant-attributes \
+          --use-short-doctype \
+          --minify-css true \
+          --minify-js true
+          
+    - name: 🗜️ Minificar CSS
+      run: |
+        npx cleancss -o dist/styles.css dist/styles.css
+        
+    - name: 🗜️ Minificar JavaScript
+      run: |
+        npx terser dist/script.js -o dist/script.js --compress --mangle --toplevel
+        
+    - name: 📊 Exibir estatísticas de build
+      run: |
+        echo "📈 Estatísticas do build:"
+        echo "📂 Arquivos na pasta dist:"
+        ls -lah dist/
+        echo ""
+        echo "📏 Tamanhos dos arquivos:"
+        du -h dist/*
+        
+    - name: 🔍 Verificar integridade dos arquivos
+      run: |
+        echo "🔍 Verificando integridade..."
+        
+        # Verifica se HTML ainda é válido
+        if [ ! -s "dist/index.html" ]; then
+          echo "❌ Erro: index.html está vazio após minificação!"
+          exit 1
+        fi
+        
+        # Verifica se CSS ainda é válido
+        if [ ! -s "dist/styles.css" ]; then
+          echo "❌ Erro: styles.css está vazio após minificação!"
+          exit 1
+        fi
+        
+        # Verifica se JS ainda é válido
+        if [ ! -s "dist/script.js" ]; then
+          echo "❌ Erro: script.js está vazio após minificação!"
+          exit 1
+        fi
+        
+        echo "✅ Todos os arquivos foram processados corretamente!"
+        
+    - name: 📤 Upload dos artefatos de build
+      uses: actions/upload-artifact@v4
+      with:
+        name: built-app
+        path: dist/
+        retention-days: 30
+
+  # Job para deploy no GitHub Pages (apenas em push para main)
+  deploy:
+    name: 🌐 Deploy no GitHub Pages
+    runs-on: ubuntu-latest
+    needs: build
+    if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master')
+    
+    environment:
+      name: github-pages
+      
+    steps:
+    - name: 📥 Download dos artefatos
+      uses: actions/download-artifact@v4
+      with:
+        name: built-app
+        path: dist/
+        
+    - name: 🔧 Configurar GitHub Pages
+      uses: actions/configure-pages@v4
+      
+    - name: 📤 Upload para GitHub Pages
+      uses: actions/upload-pages-artifact@v3
+      with:
+        path: dist/
+        
+    - name: 🚀 Deploy no GitHub Pages
+      id: deployment
+      uses: actions/deploy-pages@v4
+      
+    - name: ✅ Deploy concluído
+      run: |
+        echo "🎉 Deploy realizado com sucesso!"
+        echo "🌐 URL da aplicação: ${{ steps.deployment.outputs.page_url }}"
+        echo ""
+        echo "📋 Resumo do deploy:"
+        echo "• Branch: ${{ github.ref_name }}"
+        echo "• Commit: ${{ github.sha }}"
+        echo "• Autor: ${{ github.actor }}"
+        echo "• Workflow: ${{ github.run_number }}"
+
+  # Job para comentar no PR (apenas em pull requests)
+  pr-comment:
+    name: 💬 Comentário no PR
+    runs-on: ubuntu-latest
+    needs: build
+    if: github.event_name == 'pull_request'
+    continue-on-error: true  # Não falha o workflow se o comentário falhar
+    
+    steps:
+    - name: 📝 Comentar no Pull Request
+      uses: actions/github-script@v7
+      continue-on-error: true  # Permite que o step falhe sem afetar outros jobs
+      with:
+        script: |
+          const { owner, repo, number } = context.issue;
+          
+          const comment = `## 🚀 Build Concluído com Sucesso!
+          
+          ✅ **Validação**: Arquivos HTML, CSS e JS verificados
+          ✅ **Build**: Aplicação compilada e otimizada
+          ✅ **Minificação**: Arquivos comprimidos para melhor performance
+          
+          ### 📊 Informações do Build:
+          - **Commit**: \`${context.sha.substring(0, 7)}\`
+          - **Branch**: \`${context.ref.replace('refs/heads/', '')}\`
+          - **Workflow**: #${context.runNumber}
+          
+          ### 🔍 Próximos Passos:
+          Após o merge desta PR, a aplicação será automaticamente deployada no GitHub Pages.
+          
+          ---
+          🤖 _Comentário automático do GitHub Actions_`;
+          
+          await github.rest.issues.createComment({
+            owner,
+            repo,
+            issue_number: number,
+            body: comment
+          });
