@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Monitor de Qualidade do Ar - Sinquia Evertec</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🌬️ Monitor de Qualidade do Ar</h1>
+            <p>Consulte o índice de qualidade do ar da sua região</p>
+        </header>
+
+        <form id="locationForm" class="location-form">
+            <div class="form-group">
+                <label for="cidade">Cidade *</label>
+                <input 
+                    type="text" 
+                    id="cidade" 
+                    name="cidade" 
+                    required 
+                    placeholder="Digite o nome da cidade"
+                    maxlength="100"
+                />
+                <span class="error-message" id="cidadeError"></span>
+            </div>
+
+            <div class="form-group">
+                <label for="estado">Estado/Província/Região *</label>
+                <input 
+                    type="text" 
+                    id="estado" 
+                    name="estado" 
+                    required 
+                    placeholder="Digite o estado ou região"
+                    maxlength="100"
+                />
+                <span class="error-message" id="estadoError"></span>
+            </div>
+
+            <div class="form-group">
+                <label for="pais">País</label>
+                <input 
+                    type="text" 
+                    id="pais" 
+                    name="pais" 
+                    value="Brasil" 
+                    placeholder="Digite o país (Brasil por padrão)"
+                    maxlength="100"
+                />
+                <span class="error-message" id="paisError"></span>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn-submit" id="submitBtn">
+                    <span class="btn-text">Consultar Qualidade do Ar</span>
+                    <span class="btn-loading" style="display: none;">
+                        <span class="spinner"></span>
+                        Carregando...
+                    </span>
+                </button>
+                <button type="button" class="btn-clear" onclick="clearForm()">
+                    Limpar
+                </button>
+            </div>
+        </form>
+
+        <div id="result" class="result-section" style="display: none;">
+            <h3>📍 Localização Encontrada:</h3>
+            <div id="locationContent"></div>
+        </div>
+
+        <div id="airQualityResult" class="air-quality-section" style="display: none;">
+            <h3>🌬️ Qualidade do Ar:</h3>
+            <div id="airQualityContent"></div>
+        </div>
+
+        <div id="errorResult" class="error-section" style="display: none;">
+            <h3>⚠️ Erro:</h3>
+            <div id="errorContent"></div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

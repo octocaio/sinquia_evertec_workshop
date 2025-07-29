@@ -1,6 +1,30 @@
 # Desafios do Workshop de Hackathon de Agentes Copilot e MCP
 
+[![🚀 Deploy](https://github.com/octocaio/sinquia_evertec_workshop/actions/workflows/deploy.yml/badge.svg)](https://github.com/octocaio/sinquia_evertec_workshop/actions/workflows/deploy.yml)
+[![GitHub Pages](https://img.shields.io/badge/GitHub%20Pages-Live-green)](https://octocaio.github.io/sinquia_evertec_workshop/)
+
 Bem-vindo ao repositório do Workshop de Hackathon Copilot! Aqui você encontrará quatro arquivos de desafios práticos, cada um projetado como um documento markdown independente para ajudá-lo a praticar a construção de aplicações web e backend modernas.
+
+## 🚀 Aplicação Desenvolvida: Monitor de Qualidade do Ar
+
+### **🌐 [Acessar Aplicação Live](https://octocaio.github.io/sinquia_evertec_workshop/)**
+
+Uma aplicação web moderna desenvolvida durante o workshop que permite consultar o índice de qualidade do ar (IQA) em tempo real para qualquer localização do mundo.
+
+**✨ Funcionalidades Implementadas:**
+- 🗺️ Geocodificação automática de localização
+- 🌬️ Monitoramento de qualidade do ar em tempo real via APIs
+- 📊 6 poluentes monitorados (PM2.5, PM10, NO₂, SO₂, O₃, CO)
+- 🛡️ Alertas de saúde inteligentes baseados no AQI
+- 📱 Interface responsiva e moderna
+- 🚀 Deploy automático via GitHub Actions
+
+**🛠️ Tecnologias Utilizadas:**
+- Frontend: HTML5, CSS3, JavaScript ES6+
+- APIs: Nominatim (geocodificação) + Open-Meteo (qualidade do ar)
+- CI/CD: GitHub Actions + GitHub Pages
+- Validação: ESLint, StyleLint, HTML Validate
+- Otimização: Minificação automática de HTML/CSS/JS
 
 ## Visão Geral dos Desafios
 
