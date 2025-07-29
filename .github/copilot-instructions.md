@@ -1,5 +1,7 @@
 # Sinquia Evertec Workshop - Copilot
 
+Add a .gitignore when adding new code, update .gitignore when you add/change new code.
+
 ## GitHub Repo Information
 
 This repo is hosted in GitHub:
