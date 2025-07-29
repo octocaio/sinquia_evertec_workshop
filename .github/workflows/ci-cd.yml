@@ -140,8 +140,22 @@ jobs:
         
     - name: 🧪 Run basic tests
       run: |
-        npx playwright test --config=- <<EOF
-        import { test, expect } from '@playwright/test';
+        # Create a simple Playwright config file
+        cat > playwright.config.js << 'EOF'
+        module.exports = {
+          testDir: './tests',
+          timeout: 30000,
+          use: {
+            headless: true,
+            viewport: { width: 1280, height: 720 },
+          },
+        };
+        EOF
+        
+        # Create test directory and test file
+        mkdir -p tests
+        cat > tests/app.spec.js << 'EOF'
+        const { test, expect } = require('@playwright/test');
         
         test('Air Quality App loads correctly', async ({ page }) => {
           await page.goto('http://localhost:8080');
@@ -152,10 +166,13 @@ jobs:
         test('Form validation works', async ({ page }) => {
           await page.goto('http://localhost:8080');
           await page.click('button[type="submit"]');
-          // Check that validation prevents empty form submission
+          // Check that validation prevents empty form submission  
           await expect(page.locator('.error-message')).toBeVisible({ timeout: 5000 });
         });
         EOF
+        
+        # Run the tests
+        npx playwright test
 
   deploy:
     name: 🚀 Deploy to GitHub Pages
