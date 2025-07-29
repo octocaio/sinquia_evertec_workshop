@@ -1,0 +1,138 @@
+name: Deploy para GitHub Pages
+
+on:
+  push:
+    branches: [ main, W1-AirQuality ]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout código
+      uses: actions/checkout@v4
+    
+    - name: Configurar Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20.x'
+        cache: 'npm'
+        cache-dependency-path: W1/package-lock.json
+    
+    - name: Instalar dependências
+      run: |
+        cd W1
+        npm ci
+    
+    - name: Executar testes antes do deploy
+      run: |
+        cd W1
+        npm test
+        echo "✅ Testes passaram - prosseguindo com deploy"
+
+  build:
+    runs-on: ubuntu-latest
+    needs: test
+    
+    steps:
+    - name: Checkout código
+      uses: actions/checkout@v4
+    
+    - name: Configurar Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20.x'
+        cache: 'npm'
+        cache-dependency-path: W1/package-lock.json
+    
+    - name: Instalar dependências
+      run: |
+        cd W1
+        npm ci
+    
+    - name: Configurar GitHub Pages
+      uses: actions/configure-pages@v4
+    
+    - name: Preparar arquivos para deploy
+      run: |
+        mkdir -p _site
+        cp W1/index.html _site/
+        cp W1/script.js _site/
+        cp W1/styles.css _site/
+        
+        # Criar página de informações do projeto
+        cat > _site/project-info.html << 'EOF'
+        <!DOCTYPE html>
+        <html lang="pt-BR">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Informações do Projeto - Air Quality App</title>
+            <style>
+                body { font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; }
+                .badge { background: #007acc; color: white; padding: 4px 8px; border-radius: 4px; font-size: 12px; }
+                .success { background: #28a745; }
+                .warning { background: #ffc107; color: black; }
+            </style>
+        </head>
+        <body>
+            <h1>🌍 Air Quality App - Projeto W1</h1>
+            <p><span class="badge success">✅ Deploy Automático</span> <span class="badge">📅 $(date)</span></p>
+            
+            <h2>📊 Status do Projeto</h2>
+            <ul>
+                <li>✅ Testes Unitários: Executados com sucesso</li>
+                <li>✅ Testes E2E: Validação cross-browser</li>
+                <li>✅ Deploy Automático: GitHub Actions + Pages</li>
+                <li>🔧 Dependabot: Atualizações automáticas</li>
+            </ul>
+            
+            <h2>🚀 Funcionalidades</h2>
+            <ul>
+                <li>Busca dados de qualidade do ar em tempo real</li>
+                <li>Interface responsiva e acessível</li>
+                <li>Navegação por teclado</li>
+                <li>Estados de loading e erro</li>
+                <li>Validação de entrada</li>
+            </ul>
+            
+            <p><a href="index.html">🏠 Voltar para o App</a></p>
+        </body>
+        </html>
+        EOF
+        
+        echo "📁 Arquivos preparados para deploy:"
+        ls -la _site/
+    
+    - name: Upload artifact
+      uses: actions/upload-pages-artifact@v3
+      with:
+        path: '_site'
+
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build
+    
+    steps:
+    - name: Deploy para GitHub Pages
+      id: deployment
+      uses: actions/deploy-pages@v4
+    
+    - name: Verificar deploy
+      run: |
+        echo "🎉 Deploy realizado com sucesso!"
+        echo "🔗 URL: ${{ steps.deployment.outputs.page_url }}"
+        echo "📱 Acesse o app em: ${{ steps.deployment.outputs.page_url }}"
